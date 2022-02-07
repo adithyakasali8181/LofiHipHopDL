@@ -1,0 +1,12 @@
+services:
+    app:
+        #stdin_open: true
+        #tty: true
+
+        container_name: LoFiDL
+        build: .
+        volumes:
+            - ./app:/app
+
+# USE FOR TRAINING (or just use vscode extension)
+# $ docker compose run --rm app
