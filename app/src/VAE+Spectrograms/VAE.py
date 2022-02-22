@@ -151,15 +151,44 @@ class VAE:
         autoencoder.model.load_weights(weights_path)
         return autoencoder
 
-# test layers
+#train
+LEARNING_RATE = 0
+BATCH_SIZE = 0
+EPOCHS = 0
+SPECTROGRAMS_PATH = ""
+
 if __name__ == "__main__":
+    x_train = []
+    for root, _, file_names in os.walk(SPECTROGRAMS_PATH): ###########################
+        for file_name in file_names:
+            file_path = os.path.join(root, file_name)
+            spectrogram = np.load(file_path) 
+            x_train.append(spectrogram)
+    x_train = np.array(x_train)
+    x_train = x_train[..., np.newaxis]
+
     autoencoder = VAE(
-        input_shape=(28, 28, 1),
-        conv_filters=(32, 64, 64, 64),
-        conv_kernels=(3, 3, 3, 3),
-        conv_strides=(1, 2, 2, 1),
-        latent_space_dim=2
+        # input_shape=(256, 64, 1),
+        conv_filters=(512, 256, 128, 64, 32),
+        conv_kernels=(3, 3, 3, 3, 3),
+        conv_strides=(2, 2, 2, 2, (2, 1)),
+        latent_space_dim=128
     )
-    autoencoder.encoder.summary()
-    autoencoder.decoder.summary()
-    autoencoder.model.summary()
+    autoencoder.summary()
+    autoencoder.compile(learning_rate)
+    autoencoder.train(x_train, batch_size, epochs)
+
+    autoencoder.save("VAE_model")
+
+# test layers
+# if __name__ == "__main__":
+#     autoencoder = VAE(
+#         input_shape=(256, 64, 1),
+#         conv_filters=(512, 256, 128, 64, 32),
+#         conv_kernels=(3, 3, 3, 3, 3),
+#         conv_strides=(2, 2, 2, 2, (2, 1)),
+#         latent_space_dim=128
+#     )
+#     autoencoder.encoder.summary()
+#     autoencoder.decoder.summary()
+#     autoencoder.model.summary()
